@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300" fill="none">
+  <rect width="300" height="300" fill="#0b0d0c"/>
+  <rect x="28" y="28" width="244" height="244" stroke="#c8f000" stroke-width="14" fill="none"/>
+  <text x="150" y="178" text-anchor="middle" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-size="96" font-weight="900" fill="#c8f000" letter-spacing="-2">CF</text>
+  <text x="150" y="232" text-anchor="middle" font-family="Arial, Helvetica Neue, sans-serif" font-size="22" font-weight="800" fill="#c8f000" letter-spacing="6">DFW</text>
+</svg>
