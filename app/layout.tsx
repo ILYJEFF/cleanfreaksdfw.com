@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
 import { Unbounded, Manrope } from 'next/font/google';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import { SITE_NAME, SITE_TAGLINE, SITE_URL, CONTACT } from '@/lib/brand';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { FloatingCTA } from '@/components/FloatingCTA';
 import { JsonLd } from '@/components/JsonLd';
 import { organizationJsonLd, websiteJsonLd } from '@/lib/seo';
+import { GA_MEASUREMENT_ID } from '@/lib/analytics';
 import './globals.css';
 
 const display = Unbounded({
@@ -97,6 +99,9 @@ export default function RootLayout({
         </main>
         <Footer />
         <FloatingCTA />
+        {GA_MEASUREMENT_ID ? (
+          <GoogleAnalytics gaId={GA_MEASUREMENT_ID} />
+        ) : null}
       </body>
     </html>
   );

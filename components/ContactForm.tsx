@@ -16,6 +16,7 @@ import {
   type PropertyType,
 } from "@/lib/quote-form";
 import { CustomSelect } from "@/components/CustomSelect";
+import { trackEvent } from "@/lib/analytics";
 
 const fieldClass =
   "w-full border-2 border-ink bg-paper px-3.5 py-3 text-ink placeholder:text-ink-mute/50 outline-none transition-colors focus:bg-white focus:shadow-punch";
@@ -99,6 +100,10 @@ export function ContactForm({ compact = false }: { compact?: boolean }) {
         body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error("Failed");
+      trackEvent("generate_lead", {
+        property_type: propertyType,
+        city: payload.city || undefined,
+      });
       setStatus("success");
       form.reset();
       setPropertyType("");
