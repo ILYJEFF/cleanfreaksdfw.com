@@ -102,16 +102,43 @@ function buildQuoteBodies(payload: QuoteMailPayload) {
     `Contact the lead at: ${payload.email} / ${payload.phone}`,
   ].join("\n");
 
+  const rowBorder = "border-bottom:1px solid #e4e8df;";
+  const labelCell = `padding:10px 0;color:#5a6570;width:140px;vertical-align:top;${rowBorder}`;
+  const valueCell = `padding:10px 0;vertical-align:top;${rowBorder}`;
+
   const detailRows = detailLines.length
     ? detailLines
-        .map((line) => {
+        .map((line, i) => {
           const idx = line.indexOf(": ");
           const label = idx >= 0 ? line.slice(0, idx) : "Detail";
           const value = idx >= 0 ? line.slice(idx + 2) : line;
-          return `<tr><td style="padding:6px 0;color:#5a6570;width:140px;vertical-align:top;">${escapeHtml(label)}</td><td style="padding:6px 0;">${escapeHtml(value)}</td></tr>`;
+          const last = i === detailLines.length - 1;
+          const lb = last ? labelCell.replace(rowBorder, "border-bottom:none;") : labelCell;
+          const vb = last ? valueCell.replace(rowBorder, "border-bottom:none;") : valueCell;
+          return `<tr><td style="${lb}">${escapeHtml(label)}</td><td style="${vb}">${escapeHtml(value)}</td></tr>`;
         })
         .join("")
-    : `<tr><td colspan="2" style="padding:6px 0;">${escapeHtml(payload.message || "n/a")}</td></tr>`;
+    : `<tr><td colspan="2" style="padding:10px 0;">${escapeHtml(payload.message || "n/a")}</td></tr>`;
+
+  const summaryRows = [
+    [
+      "Phone",
+      `<a href="tel:${escapeHtml(payload.phone)}" style="color:#0b0d0c;text-decoration:none;">${escapeHtml(payload.phone)}</a>`,
+    ],
+    [
+      "Email",
+      `<a href="mailto:${escapeHtml(payload.email)}" style="color:#0b0d0c;text-decoration:none;">${escapeHtml(payload.email)}</a>`,
+    ],
+    ["Property", escapeHtml(propertyType)],
+    ["Location", escapeHtml(locationLine || city)],
+  ]
+    .map(([label, value], i, arr) => {
+      const last = i === arr.length - 1;
+      const lb = last ? labelCell.replace(rowBorder, "border-bottom:none;") : labelCell;
+      const vb = last ? valueCell.replace(rowBorder, "border-bottom:none;") : valueCell;
+      return `<tr><td style="${lb}">${label}</td><td style="${vb}">${value}</td></tr>`;
+    })
+    .join("");
 
   const html = `<!DOCTYPE html>
 <html><body style="margin:0;padding:0;background:#f5f7f2;font-family:Arial,Helvetica,sans-serif;color:#0b0d0c;">
@@ -125,11 +152,8 @@ function buildQuoteBodies(payload: QuoteMailPayload) {
         </td></tr>
         <tr><td style="padding:24px;">
           <p style="margin:0 0 16px;font-size:15px;line-height:1.5;"><strong>${escapeHtml(name)}</strong> submitted the quote form.</p>
-          <table width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;line-height:1.6;margin-bottom:8px;">
-            <tr><td style="padding:4px 0;color:#5a6570;width:140px;">Phone</td><td style="padding:4px 0;"><a href="tel:${escapeHtml(payload.phone)}" style="color:#0b0d0c;">${escapeHtml(payload.phone)}</a></td></tr>
-            <tr><td style="padding:4px 0;color:#5a6570;">Email</td><td style="padding:4px 0;"><a href="mailto:${escapeHtml(payload.email)}" style="color:#0b0d0c;">${escapeHtml(payload.email)}</a></td></tr>
-            <tr><td style="padding:4px 0;color:#5a6570;">Property</td><td style="padding:4px 0;">${escapeHtml(propertyType)}</td></tr>
-            <tr><td style="padding:4px 0;color:#5a6570;">Location</td><td style="padding:4px 0;">${escapeHtml(locationLine || city)}</td></tr>
+          <table width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;line-height:1.55;margin-bottom:8px;">
+            ${summaryRows}
           </table>
           <div style="margin-top:16px;padding-top:16px;border-top:1px solid #d7ddd2;">
             <div style="font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#5a6570;font-weight:700;margin-bottom:10px;">Assessment</div>
@@ -139,7 +163,7 @@ function buildQuoteBodies(payload: QuoteMailPayload) {
           </div>
         </td></tr>
         <tr><td style="padding:14px 24px;border-top:1px solid #d7ddd2;">
-          <p style="margin:0;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8a93a3;">Internal lead · not sent to customer</p>
+          <p style="margin:0;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8a93a3;">Internal lead · cleanfreaksdfw.com</p>
         </td></tr>
       </table>
     </td></tr>
@@ -158,8 +182,8 @@ function escapeHtml(value: string): string {
 }
 
 /**
- * Lead scrape ONLY to sales@ (QUOTE_NOTIFY_EMAIL).
- * Never emails the person who filled out the form.
+ * Lead scrape to sales@ (QUOTE_NOTIFY_EMAIL).
+ * Never uses the form submitter as the To address.
  */
 export async function sendQuoteNotification(payload: QuoteMailPayload) {
   const { transporter, fromName, fromEmail, smtpUser } = createTransporter();
@@ -174,7 +198,7 @@ export async function sendQuoteNotification(payload: QuoteMailPayload) {
     throw new Error("QUOTE_NOTIFY_EMAIL is empty");
   }
 
-  // Hard guard: never send to the form submitter.
+  // Hard guard: never send the lead email to the form submitter.
   const leadEmail = payload.email.trim().toLowerCase();
   const to = recipients.filter((addr) => addr !== leadEmail);
   if (!to.length) {
@@ -189,7 +213,6 @@ export async function sendQuoteNotification(payload: QuoteMailPayload) {
       to,
     },
     to,
-    // Lead contact is in the body. Skip Reply-To to avoid PrivateMail relay quirks.
     subject,
     text,
     html,
@@ -200,5 +223,60 @@ export async function sendQuoteNotification(payload: QuoteMailPayload) {
   });
 
   console.info("[mail] lead sent to", to, info.messageId, info.response);
+  return info;
+}
+
+/** Short confirmation to the person who submitted the form. */
+export async function sendQuoteConfirmation(payload: QuoteMailPayload) {
+  const { transporter, fromName, fromEmail, smtpUser } = createTransporter();
+  const greeting = payload.firstName.trim() || "there";
+  const to = payload.email.trim();
+
+  const text = [
+    `Hi ${greeting},`,
+    "",
+    "We have your Clean Freaks DFW quote request and will be in touch shortly.",
+    "",
+    "A little obsessed. Extremely thorough.",
+    "",
+    "Clean Freaks DFW",
+    "cleanfreaksdfw.com",
+  ].join("\n");
+
+  const html = `<!DOCTYPE html>
+<html><body style="margin:0;padding:0;background:#f5f7f2;font-family:Arial,Helvetica,sans-serif;color:#0b0d0c;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="padding:32px 16px;background:#f5f7f2;">
+    <tr><td align="center">
+      <table width="100%" style="max-width:520px;background:#ffffff;border:2px solid #0b0d0c;" cellpadding="0" cellspacing="0">
+        <tr><td style="padding:22px 24px;background:#0b0d0c;color:#c8f000;">
+          <div style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;font-weight:700;">Clean Freaks DFW</div>
+        </td></tr>
+        <tr><td style="padding:28px 24px;">
+          <h1 style="margin:0 0 12px;font-size:22px;line-height:1.25;">We have your request.</h1>
+          <p style="margin:0 0 14px;font-size:15px;line-height:1.55;">Hi ${escapeHtml(greeting)}, thanks for reaching out. We received your quote details and will be in touch shortly.</p>
+          <p style="margin:0;font-size:14px;line-height:1.55;color:#5a6570;">A little obsessed. Extremely thorough.</p>
+        </td></tr>
+        <tr><td style="padding:14px 24px;border-top:1px solid #d7ddd2;">
+          <p style="margin:0;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8a93a3;">cleanfreaksdfw.com</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`;
+
+  const info = await transporter.sendMail({
+    from: `"${fromName}" <${fromEmail}>`,
+    sender: smtpUser,
+    envelope: {
+      from: smtpUser,
+      to: [to],
+    },
+    to,
+    subject: "We have your Clean Freaks DFW quote request",
+    text,
+    html,
+  });
+
+  console.info("[mail] confirmation sent to", to, info.messageId);
   return info;
 }

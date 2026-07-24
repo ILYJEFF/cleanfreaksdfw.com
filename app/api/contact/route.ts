@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   isSmtpConfigured,
+  sendQuoteConfirmation,
   sendQuoteNotification,
 } from "@/lib/mail";
 import { composeMessageFromDetails } from "@/lib/quote-form";
@@ -71,8 +72,13 @@ export async function POST(request: NextRequest) {
 
     let emailSent = false;
     if (isSmtpConfigured()) {
-      // Lead scrape only: notify Clean Freaks inbox. Do not email the submitter.
+      // Lead always goes to sales@. Confirmation goes to the form filler.
       await sendQuoteNotification(payload);
+      try {
+        await sendQuoteConfirmation(payload);
+      } catch (confirmErr) {
+        console.warn("[contact] Confirmation email failed:", confirmErr);
+      }
       emailSent = true;
       if (quoteId) {
         await markQuoteEmailSent(quoteId, true);
