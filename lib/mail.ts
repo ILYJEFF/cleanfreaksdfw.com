@@ -30,6 +30,7 @@ function createTransporter() {
       host,
       port,
       secure: port === 465,
+      requireTLS: port === 587,
       auth: { user, pass },
       authMethod: "LOGIN",
       tls: { minVersion: "TLSv1.2" },
@@ -40,13 +41,15 @@ function createTransporter() {
   };
 }
 
+/** Only sales@ (or QUOTE_NOTIFY_EMAIL). Never the form submitter. */
 function notifyRecipients(): string[] {
   const raw =
-    process.env.QUOTE_NOTIFY_EMAIL?.trim() || "hello@cleanfreaksdfw.com";
-  return raw
+    process.env.QUOTE_NOTIFY_EMAIL?.trim() || "sales@cleanfreaksdfw.com";
+  const list = raw
     .split(/[,;]+/)
-    .map((s) => s.trim())
+    .map((s) => s.trim().toLowerCase())
     .filter(Boolean);
+  return Array.from(new Set(list));
 }
 
 export type QuoteMailPayload = {
@@ -73,18 +76,19 @@ function buildQuoteBodies(payload: QuoteMailPayload) {
   const details = payload.details || {};
   const street = String(details.streetAddress || "").trim();
   const city =
-    payload.city ||
-    String(details.city || "").trim() ||
-    "n/a";
+    payload.city || String(details.city || "").trim() || "n/a";
   const state = String(details.state || "").trim();
   const zip = String(details.zip || "").trim();
-  const locationLine = [street, [city !== "n/a" ? city : "", state, zip].filter(Boolean).join(", ")]
+  const locationLine = [
+    street,
+    [city !== "n/a" ? city : "", state, zip].filter(Boolean).join(", "),
+  ]
     .filter(Boolean)
     .join(" · ");
   const detailLines = detailsToLines(payload.details);
 
   const text = [
-    "New quote request from Clean Freaks DFW",
+    "NEW LEAD · Clean Freaks DFW website form",
     "",
     `Name: ${name}`,
     `Phone: ${payload.phone}`,
@@ -94,6 +98,8 @@ function buildQuoteBodies(payload: QuoteMailPayload) {
     "",
     "Assessment:",
     ...(detailLines.length ? detailLines : [payload.message || "n/a"]),
+    "",
+    `Contact the lead at: ${payload.email} / ${payload.phone}`,
   ].join("\n");
 
   const detailRows = detailLines.length
@@ -113,14 +119,14 @@ function buildQuoteBodies(payload: QuoteMailPayload) {
     <tr><td align="center">
       <table width="100%" style="max-width:600px;background:#ffffff;border:2px solid #0b0d0c;" cellpadding="0" cellspacing="0">
         <tr><td style="padding:22px 24px;background:#0b0d0c;color:#c8f000;">
-          <div style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;font-weight:700;">Clean Freaks DFW · Sales</div>
-          <div style="margin-top:8px;font-size:22px;font-weight:700;color:#ffffff;">New quote request</div>
+          <div style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;font-weight:700;">Clean Freaks DFW · Sales lead</div>
+          <div style="margin-top:8px;font-size:22px;font-weight:700;color:#ffffff;">Website quote request</div>
           <div style="margin-top:6px;font-size:13px;color:#c8f000;">${escapeHtml(propertyType)} · ${escapeHtml(city)}</div>
         </td></tr>
         <tr><td style="padding:24px;">
-          <p style="margin:0 0 16px;font-size:15px;line-height:1.5;"><strong>${escapeHtml(name)}</strong> wants a quote.</p>
+          <p style="margin:0 0 16px;font-size:15px;line-height:1.5;"><strong>${escapeHtml(name)}</strong> submitted the quote form.</p>
           <table width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;line-height:1.6;margin-bottom:8px;">
-            <tr><td style="padding:4px 0;color:#5a6570;width:140px;">Phone</td><td style="padding:4px 0;">${escapeHtml(payload.phone)}</td></tr>
+            <tr><td style="padding:4px 0;color:#5a6570;width:140px;">Phone</td><td style="padding:4px 0;"><a href="tel:${escapeHtml(payload.phone)}" style="color:#0b0d0c;">${escapeHtml(payload.phone)}</a></td></tr>
             <tr><td style="padding:4px 0;color:#5a6570;">Email</td><td style="padding:4px 0;"><a href="mailto:${escapeHtml(payload.email)}" style="color:#0b0d0c;">${escapeHtml(payload.email)}</a></td></tr>
             <tr><td style="padding:4px 0;color:#5a6570;">Property</td><td style="padding:4px 0;">${escapeHtml(propertyType)}</td></tr>
             <tr><td style="padding:4px 0;color:#5a6570;">Location</td><td style="padding:4px 0;">${escapeHtml(locationLine || city)}</td></tr>
@@ -133,7 +139,7 @@ function buildQuoteBodies(payload: QuoteMailPayload) {
           </div>
         </td></tr>
         <tr><td style="padding:14px 24px;border-top:1px solid #d7ddd2;">
-          <p style="margin:0;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8a93a3;">Reply to this email to reach the lead</p>
+          <p style="margin:0;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8a93a3;">Internal lead · not sent to customer</p>
         </td></tr>
       </table>
     </td></tr>
@@ -151,14 +157,31 @@ function escapeHtml(value: string): string {
     .replace(/"/g, "&quot;");
 }
 
-/** Notify hello@ (and any comma-separated QUOTE_NOTIFY_EMAIL addresses). */
+/**
+ * Lead scrape ONLY to sales@ (QUOTE_NOTIFY_EMAIL).
+ * Never emails the person who filled out the form.
+ */
 export async function sendQuoteNotification(payload: QuoteMailPayload) {
   const { transporter, fromName, fromEmail, smtpUser } = createTransporter();
   const { text, html, name } = buildQuoteBodies(payload);
-  const to = notifyRecipients();
+  const recipients = notifyRecipients();
   const typeLabel = propertyLabel(payload.propertyType);
+  const subject = `NEW LEAD · ${typeLabel}: ${name}${
+    payload.city ? ` · ${payload.city}` : ""
+  }`;
 
-  await transporter.sendMail({
+  if (!recipients.length) {
+    throw new Error("QUOTE_NOTIFY_EMAIL is empty");
+  }
+
+  // Hard guard: never send to the form submitter.
+  const leadEmail = payload.email.trim().toLowerCase();
+  const to = recipients.filter((addr) => addr !== leadEmail);
+  if (!to.length) {
+    throw new Error("Lead notify list only contained the customer email");
+  }
+
+  const info = await transporter.sendMail({
     from: `"${fromName}" <${fromEmail}>`,
     sender: smtpUser,
     envelope: {
@@ -166,44 +189,16 @@ export async function sendQuoteNotification(payload: QuoteMailPayload) {
       to,
     },
     to,
-    replyTo: `"${name}" <${payload.email}>`,
-    subject: `Quote · ${typeLabel}: ${name}${payload.city ? ` · ${payload.city}` : ""}`,
+    // Lead contact is in the body. Skip Reply-To to avoid PrivateMail relay quirks.
+    subject,
     text,
     html,
-  });
-}
-
-/** Confirmation to the person who submitted the form. */
-export async function sendQuoteConfirmation(payload: QuoteMailPayload) {
-  const { transporter, fromName, fromEmail, smtpUser } = createTransporter();
-  const greeting = payload.firstName.trim() || "there";
-
-  await transporter.sendMail({
-    from: `"${fromName}" <${fromEmail}>`,
-    sender: smtpUser,
-    envelope: {
-      from: smtpUser,
-      to: payload.email,
+    headers: {
+      "X-CleanFreaks-Lead": "quote",
+      "X-Auto-Response-Suppress": "All",
     },
-    to: payload.email,
-    subject: "We got your Clean Freaks DFW quote request",
-    text: `Hi ${greeting},\n\nThanks for reaching out to Clean Freaks DFW. Our sales team has your details and will follow up soon.\n\nA little obsessed. Extremely thorough.\n`,
-    html: `<!DOCTYPE html>
-<html><body style="margin:0;padding:0;background:#f5f7f2;font-family:Arial,Helvetica,sans-serif;color:#0b0d0c;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="padding:32px 16px;">
-    <tr><td align="center">
-      <table width="100%" style="max-width:520px;background:#ffffff;border:2px solid #0b0d0c;" cellpadding="0" cellspacing="0">
-        <tr><td style="padding:22px 24px;background:#0b0d0c;color:#c8f000;">
-          <div style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;font-weight:700;">Clean Freaks DFW</div>
-        </td></tr>
-        <tr><td style="padding:24px;">
-          <h1 style="margin:0 0 12px;font-size:22px;">We got it.</h1>
-          <p style="margin:0;font-size:15px;line-height:1.55;">Hi ${escapeHtml(greeting)}, thanks for the details. Sales will follow up soon about your clean.</p>
-          <p style="margin:20px 0 0;font-size:13px;color:#5a6570;">A little obsessed. Extremely thorough.</p>
-        </td></tr>
-      </table>
-    </td></tr>
-  </table>
-</body></html>`,
   });
+
+  console.info("[mail] lead sent to", to, info.messageId, info.response);
+  return info;
 }
