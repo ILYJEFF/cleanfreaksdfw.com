@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import {
   PROPERTY_TYPE_OPTIONS,
+  US_STATE_OPTIONS,
+  pickAddressFields,
   type PropertyType,
 } from "@/lib/quote-form";
 import { CustomSelect } from "@/components/CustomSelect";
@@ -227,12 +229,6 @@ export function ContactForm({ compact = false }: { compact?: boolean }) {
             autoComplete="email"
           />
         </div>
-        <Field
-          label="City / area"
-          name="city"
-          required
-          placeholder="Carrollton, Frisco, Plano…"
-        />
       </section>
 
       {propertyType && (
@@ -253,6 +249,8 @@ export function ContactForm({ compact = false }: { compact?: boolean }) {
               These details help us quote accurately without a dozen back-and-forths.
             </p>
           </div>
+
+          <AddressFields compact={compact} />
 
           {propertyType === "commercial" && (
             <CommercialFields focusAreas={focusAreas} onToggleFocus={toggleFocus} focusOptions={focusOptions} compact={compact} />
@@ -318,9 +316,11 @@ function buildDetails(
   focusAreas: string[],
 ): Record<string, unknown> {
   const str = (key: string) => String(raw[key] || "").trim();
+  const address = pickAddressFields(raw);
 
   if (propertyType === "commercial") {
     return {
+      ...address,
       businessName: str("businessName"),
       sqFt: str("sqFt"),
       restrooms: str("restrooms"),
@@ -336,8 +336,9 @@ function buildDetails(
 
   if (propertyType === "airbnb") {
     return {
+      ...address,
       propertyName: str("propertyName"),
-      address: str("address"),
+      neighborhood: str("neighborhood"),
       bedrooms: str("bedrooms"),
       bathrooms: str("bathrooms"),
       turnoversPerWeek: str("turnoversPerWeek"),
@@ -353,6 +354,7 @@ function buildDetails(
   }
 
   return {
+    ...address,
     homeType: str("homeType"),
     bedrooms: str("bedrooms"),
     bathrooms: str("bathrooms"),
@@ -364,6 +366,53 @@ function buildDetails(
     focusAreas,
     notes: str("notes"),
   };
+}
+
+function AddressFields({ compact }: { compact: boolean }) {
+  return (
+    <div className="space-y-4 border-2 border-dashed border-ink/25 bg-paper/60 p-4 sm:p-5">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <div>
+          <p className="font-display text-[11px] font-extrabold uppercase tracking-[0.18em] text-ink-mute">
+            Property location
+          </p>
+          <p className="mt-1 text-sm font-semibold text-ink">
+            Address <span className="font-medium text-ink-mute">(optional)</span>
+          </p>
+        </div>
+      </div>
+      <Field
+        label="Street address"
+        name="streetAddress"
+        autoComplete="street-address"
+        placeholder="123 Main St, Suite 200"
+      />
+      <div
+        className={`grid gap-4 ${
+          compact ? "grid-cols-1" : "sm:grid-cols-[1.4fr_0.8fr_0.7fr]"
+        }`}
+      >
+        <Field
+          label="City"
+          name="city"
+          autoComplete="address-level2"
+          placeholder="Carrollton"
+        />
+        <CustomSelect
+          label="State"
+          name="state"
+          options={US_STATE_OPTIONS}
+          placeholder="State"
+        />
+        <Field
+          label="ZIP"
+          name="zip"
+          autoComplete="postal-code"
+          placeholder="75006"
+        />
+      </div>
+    </div>
+  );
 }
 
 function Field({
@@ -554,10 +603,9 @@ function AirbnbFields({ compact }: { compact: boolean }) {
           placeholder="Nickname or listing title"
         />
         <Field
-          label="Address or area"
-          name="address"
-          required
-          placeholder="Street or neighborhood"
+          label="Neighborhood / area"
+          name="neighborhood"
+          placeholder="Legacy West, The Colony…"
         />
       </div>
       <div className={`grid gap-5 ${compact ? "" : "sm:grid-cols-3"}`}>

@@ -58,7 +58,17 @@ function propertyLabel(type?: string): string {
 function buildQuoteBodies(payload: QuoteMailPayload) {
   const name = `${payload.firstName} ${payload.lastName}`.trim();
   const propertyType = propertyLabel(payload.propertyType);
-  const city = payload.city || "n/a";
+  const details = payload.details || {};
+  const street = String(details.streetAddress || "").trim();
+  const city =
+    payload.city ||
+    String(details.city || "").trim() ||
+    "n/a";
+  const state = String(details.state || "").trim();
+  const zip = String(details.zip || "").trim();
+  const locationLine = [street, [city !== "n/a" ? city : "", state, zip].filter(Boolean).join(", ")]
+    .filter(Boolean)
+    .join(" · ");
   const detailLines = detailsToLines(payload.details);
 
   const text = [
@@ -68,7 +78,7 @@ function buildQuoteBodies(payload: QuoteMailPayload) {
     `Phone: ${payload.phone}`,
     `Email: ${payload.email}`,
     `Property type: ${propertyType}`,
-    `City: ${city}`,
+    `Location: ${locationLine || city}`,
     "",
     "Assessment:",
     ...(detailLines.length ? detailLines : [payload.message || "n/a"]),
@@ -101,7 +111,7 @@ function buildQuoteBodies(payload: QuoteMailPayload) {
             <tr><td style="padding:4px 0;color:#5a6570;width:140px;">Phone</td><td style="padding:4px 0;">${escapeHtml(payload.phone)}</td></tr>
             <tr><td style="padding:4px 0;color:#5a6570;">Email</td><td style="padding:4px 0;"><a href="mailto:${escapeHtml(payload.email)}" style="color:#0b0d0c;">${escapeHtml(payload.email)}</a></td></tr>
             <tr><td style="padding:4px 0;color:#5a6570;">Property</td><td style="padding:4px 0;">${escapeHtml(propertyType)}</td></tr>
-            <tr><td style="padding:4px 0;color:#5a6570;">City</td><td style="padding:4px 0;">${escapeHtml(city)}</td></tr>
+            <tr><td style="padding:4px 0;color:#5a6570;">Location</td><td style="padding:4px 0;">${escapeHtml(locationLine || city)}</td></tr>
           </table>
           <div style="margin-top:16px;padding-top:16px;border-top:1px solid #d7ddd2;">
             <div style="font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#5a6570;font-weight:700;margin-bottom:10px;">Assessment</div>
