@@ -1,5 +1,6 @@
 import { createServiceClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { CF_TABLES } from "@/lib/supabase/schema";
+import { composeMessageFromDetails } from "@/lib/quote-form";
 
 export type QuoteRequestInput = {
   firstName: string;
@@ -8,7 +9,8 @@ export type QuoteRequestInput = {
   email: string;
   propertyType?: string;
   city?: string;
-  message: string;
+  message?: string;
+  details?: Record<string, unknown>;
   source?: string;
 };
 
@@ -16,6 +18,11 @@ export async function saveQuoteRequest(input: QuoteRequestInput) {
   if (!isSupabaseConfigured()) {
     throw new Error("Supabase is not configured");
   }
+
+  const message = composeMessageFromDetails(
+    input.details,
+    input.message,
+  );
 
   const supabase = createServiceClient();
   const { data, error } = await supabase
@@ -27,8 +34,11 @@ export async function saveQuoteRequest(input: QuoteRequestInput) {
       email: input.email.trim().toLowerCase(),
       property_type: input.propertyType?.trim() || null,
       city: input.city?.trim() || null,
-      message: input.message.trim(),
+      message,
       source: input.source?.trim() || "website",
+      meta: {
+        details: input.details || {},
+      },
     })
     .select("id")
     .single();

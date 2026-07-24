@@ -1,4 +1,9 @@
 import nodemailer from "nodemailer";
+import {
+  PROPERTY_TYPE_LABELS,
+  detailsToLines,
+  type PropertyType,
+} from "@/lib/quote-form";
 
 export function isSmtpConfigured(): boolean {
   return Boolean(
@@ -40,12 +45,21 @@ export type QuoteMailPayload = {
   propertyType?: string;
   city?: string;
   message: string;
+  details?: Record<string, unknown>;
 };
+
+function propertyLabel(type?: string): string {
+  if (type && type in PROPERTY_TYPE_LABELS) {
+    return PROPERTY_TYPE_LABELS[type as PropertyType];
+  }
+  return type || "n/a";
+}
 
 function buildQuoteBodies(payload: QuoteMailPayload) {
   const name = `${payload.firstName} ${payload.lastName}`.trim();
-  const propertyType = payload.propertyType || "n/a";
+  const propertyType = propertyLabel(payload.propertyType);
   const city = payload.city || "n/a";
+  const detailLines = detailsToLines(payload.details);
 
   const text = [
     "New quote request from Clean Freaks DFW",
@@ -56,31 +70,48 @@ function buildQuoteBodies(payload: QuoteMailPayload) {
     `Property type: ${propertyType}`,
     `City: ${city}`,
     "",
-    "Message:",
-    payload.message,
+    "Assessment:",
+    ...(detailLines.length ? detailLines : [payload.message || "n/a"]),
   ].join("\n");
+
+  const detailRows = detailLines.length
+    ? detailLines
+        .map((line) => {
+          const idx = line.indexOf(": ");
+          const label = idx >= 0 ? line.slice(0, idx) : "Detail";
+          const value = idx >= 0 ? line.slice(idx + 2) : line;
+          return `<tr><td style="padding:6px 0;color:#5a6570;width:140px;vertical-align:top;">${escapeHtml(label)}</td><td style="padding:6px 0;">${escapeHtml(value)}</td></tr>`;
+        })
+        .join("")
+    : `<tr><td colspan="2" style="padding:6px 0;">${escapeHtml(payload.message || "n/a")}</td></tr>`;
 
   const html = `<!DOCTYPE html>
 <html><body style="margin:0;padding:0;background:#f5f7f2;font-family:Arial,Helvetica,sans-serif;color:#0b0d0c;">
   <table width="100%" cellpadding="0" cellspacing="0" style="padding:32px 16px;background:#f5f7f2;">
     <tr><td align="center">
-      <table width="100%" style="max-width:560px;background:#ffffff;border:2px solid #0b0d0c;" cellpadding="0" cellspacing="0">
+      <table width="100%" style="max-width:600px;background:#ffffff;border:2px solid #0b0d0c;" cellpadding="0" cellspacing="0">
         <tr><td style="padding:22px 24px;background:#0b0d0c;color:#c8f000;">
-          <div style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;font-weight:700;">Clean Freaks DFW</div>
+          <div style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;font-weight:700;">Clean Freaks DFW · Sales</div>
           <div style="margin-top:8px;font-size:22px;font-weight:700;color:#ffffff;">New quote request</div>
+          <div style="margin-top:6px;font-size:13px;color:#c8f000;">${escapeHtml(propertyType)} · ${escapeHtml(city)}</div>
         </td></tr>
         <tr><td style="padding:24px;">
           <p style="margin:0 0 16px;font-size:15px;line-height:1.5;"><strong>${escapeHtml(name)}</strong> wants a quote.</p>
-          <table width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;line-height:1.6;">
-            <tr><td style="padding:4px 0;color:#5a6570;width:120px;">Phone</td><td style="padding:4px 0;">${escapeHtml(payload.phone)}</td></tr>
+          <table width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;line-height:1.6;margin-bottom:8px;">
+            <tr><td style="padding:4px 0;color:#5a6570;width:140px;">Phone</td><td style="padding:4px 0;">${escapeHtml(payload.phone)}</td></tr>
             <tr><td style="padding:4px 0;color:#5a6570;">Email</td><td style="padding:4px 0;"><a href="mailto:${escapeHtml(payload.email)}" style="color:#0b0d0c;">${escapeHtml(payload.email)}</a></td></tr>
             <tr><td style="padding:4px 0;color:#5a6570;">Property</td><td style="padding:4px 0;">${escapeHtml(propertyType)}</td></tr>
             <tr><td style="padding:4px 0;color:#5a6570;">City</td><td style="padding:4px 0;">${escapeHtml(city)}</td></tr>
           </table>
-          <div style="margin-top:20px;padding:16px;background:#f5f7f2;border:1px solid #d7ddd2;font-size:14px;line-height:1.55;white-space:pre-wrap;">${escapeHtml(payload.message)}</div>
+          <div style="margin-top:16px;padding-top:16px;border-top:1px solid #d7ddd2;">
+            <div style="font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#5a6570;font-weight:700;margin-bottom:10px;">Assessment</div>
+            <table width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;line-height:1.55;">
+              ${detailRows}
+            </table>
+          </div>
         </td></tr>
         <tr><td style="padding:14px 24px;border-top:1px solid #d7ddd2;">
-          <p style="margin:0;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8a93a3;">cleanfreaksdfw.com</p>
+          <p style="margin:0;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8a93a3;">Reply to this email to reach the lead</p>
         </td></tr>
       </table>
     </td></tr>
@@ -98,26 +129,25 @@ function escapeHtml(value: string): string {
     .replace(/"/g, "&quot;");
 }
 
-/** Notify the business inbox about a new quote. */
+/** Notify sales about a new quote. */
 export async function sendQuoteNotification(payload: QuoteMailPayload) {
   const { transporter, fromName, fromEmail } = createTransporter();
   const { text, html, name } = buildQuoteBodies(payload);
   const to =
-    process.env.QUOTE_NOTIFY_EMAIL?.trim() ||
-    process.env.SMTP_FROM_EMAIL?.trim() ||
-    process.env.SMTP_USER!.trim();
+    process.env.QUOTE_NOTIFY_EMAIL?.trim() || "sales@cleanfreaksdfw.com";
+  const typeLabel = propertyLabel(payload.propertyType);
 
   await transporter.sendMail({
     from: `"${fromName}" <${fromEmail}>`,
     to,
     replyTo: `"${name}" <${payload.email}>`,
-    subject: `Quote request: ${name}${payload.city ? ` · ${payload.city}` : ""}`,
+    subject: `Quote · ${typeLabel}: ${name}${payload.city ? ` · ${payload.city}` : ""}`,
     text,
     html,
   });
 }
 
-/** Optional confirmation to the person who submitted the form. */
+/** Confirmation to the person who submitted the form. */
 export async function sendQuoteConfirmation(payload: QuoteMailPayload) {
   const { transporter, fromName, fromEmail } = createTransporter();
   const greeting = payload.firstName.trim() || "there";
@@ -126,7 +156,7 @@ export async function sendQuoteConfirmation(payload: QuoteMailPayload) {
     from: `"${fromName}" <${fromEmail}>`,
     to: payload.email,
     subject: "We got your Clean Freaks DFW quote request",
-    text: `Hi ${greeting},\n\nThanks for reaching out to Clean Freaks DFW. We got your details and will follow up soon.\n\nA little obsessed. Extremely thorough.\n`,
+    text: `Hi ${greeting},\n\nThanks for reaching out to Clean Freaks DFW. Our sales team has your details and will follow up soon.\n\nA little obsessed. Extremely thorough.\n`,
     html: `<!DOCTYPE html>
 <html><body style="margin:0;padding:0;background:#f5f7f2;font-family:Arial,Helvetica,sans-serif;color:#0b0d0c;">
   <table width="100%" cellpadding="0" cellspacing="0" style="padding:32px 16px;">
@@ -137,7 +167,7 @@ export async function sendQuoteConfirmation(payload: QuoteMailPayload) {
         </td></tr>
         <tr><td style="padding:24px;">
           <h1 style="margin:0 0 12px;font-size:22px;">We got it.</h1>
-          <p style="margin:0;font-size:15px;line-height:1.55;">Hi ${escapeHtml(greeting)}, thanks for reaching out. We will follow up soon about your clean.</p>
+          <p style="margin:0;font-size:15px;line-height:1.55;">Hi ${escapeHtml(greeting)}, thanks for the details. Sales will follow up soon about your clean.</p>
           <p style="margin:20px 0 0;font-size:13px;color:#5a6570;">A little obsessed. Extremely thorough.</p>
         </td></tr>
       </table>

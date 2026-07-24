@@ -18,10 +18,10 @@ export default function ContactPage() {
             Contact
           </p>
           <h1 className="mt-3 max-w-2xl font-display text-4xl font-black tracking-tight sm:text-5xl">
-            Tell us about the property.
+            Tell us what we are walking into.
           </h1>
           <p className="mt-4 max-w-xl text-lg text-white/70">
-            Commercial schedules and Airbnb turnovers first. Residential when capacity allows.
+            Choose commercial, Airbnb, or residential. We ask only what sales needs to assess the clean.
           </p>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-3 bg-lime" aria-hidden />

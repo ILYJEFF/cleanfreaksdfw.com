@@ -15,7 +15,7 @@ export function ContactSection() {
               Ready when your property is.
             </h2>
             <p className="mt-4 text-lg text-ink-mute text-pretty">
-              Tell us what needs cleaning and where. Commercial and Airbnb get priority routing from Carrollton north.
+              Pick the property type, answer a few focused questions, and sales gets everything needed to quote fast.
             </p>
             <div className="mt-8 space-y-3 text-sm text-ink-mute">
               <p>
