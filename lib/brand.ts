@@ -9,7 +9,7 @@ export const SITE_URL = 'https://www.cleanfreaksdfw.com';
 export const CONTACT = {
   phoneDisplay: '(469) 555-0148',
   phoneTel: '+14695550148',
-  email: 'sales@cleanfreaksdfw.com',
+  email: 'hello@cleanfreaksdfw.com',
   city: 'Carrollton, TX',
 };
 

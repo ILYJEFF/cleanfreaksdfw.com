@@ -144,7 +144,7 @@ export async function sendQuoteNotification(payload: QuoteMailPayload) {
   const { transporter, fromName, fromEmail } = createTransporter();
   const { text, html, name } = buildQuoteBodies(payload);
   const to =
-    process.env.QUOTE_NOTIFY_EMAIL?.trim() || "sales@cleanfreaksdfw.com";
+    process.env.QUOTE_NOTIFY_EMAIL?.trim() || "hello@cleanfreaksdfw.com";
   const typeLabel = propertyLabel(payload.propertyType);
 
   await transporter.sendMail({
