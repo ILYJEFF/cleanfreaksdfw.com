@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #0e2428;
+  --tide: #1f7a6e;
+  --mist: #f2f6f5;
+  --sun: #f7faf9;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply antialiased text-ink bg-sun font-sans;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  @apply outline-none ring-2 ring-tide ring-offset-2 ring-offset-sun;
+}
+
+::selection {
+  @apply bg-tide/25 text-ink;
+}
+
+@keyframes line-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.animate-line {
+  transform-origin: left;
+  animation: line-draw 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
