@@ -1,7 +1,8 @@
 # Clean Freaks DFW
 
-Carrollton-based cleaning company website focused on **commercial properties** and **Airbnb / short-term turnovers**, with residential available as a secondary service. Operating north of Carrollton across north DFW.
+Carrollton-based cleaning company. **Commercial** and **Airbnb turnovers** first. Residential available.
 
+**Brand:** A little obsessed. Extremely thorough.  
 **Domain:** [cleanfreaksdfw.com](https://www.cleanfreaksdfw.com)
 
 ## Stack
@@ -9,6 +10,7 @@ Carrollton-based cleaning company website focused on **commercial properties** a
 - Next.js 14 (App Router)
 - TypeScript
 - Tailwind CSS
+- Unbounded + Manrope
 - Lucide icons
 
 ## Develop
@@ -18,22 +20,12 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+## Brand tokens
 
-## Configure
+- Ink `#0b0d0c`
+- Lime `#c8f000`
+- Paper `#f5f7f2`
+- Hard borders + offset “punch” shadows
+- Display: Unbounded · Body: Manrope
 
-Update contact details in `lib/brand.ts`:
-
-- Phone (placeholder until you set a real number)
-- Email (`hello@cleanfreaksdfw.com` by default)
-- Service cities
-
-Wire email delivery in `app/api/contact/route.ts` (Resend, SendGrid, etc.) before going live.
-
-## Deploy
-
-```bash
-npm run build
-```
-
-Deploy to Vercel and point `cleanfreaksdfw.com` / `www` at the project.
+Update phone/email in `lib/brand.ts` before launch.

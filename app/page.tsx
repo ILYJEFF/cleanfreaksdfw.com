@@ -1,5 +1,6 @@
 import { Hero } from '@/components/Hero';
 import { TrustStrip } from '@/components/TrustStrip';
+import { ManifestoMarquee } from '@/components/ManifestoMarquee';
 import { ServicesSection } from '@/components/ServicesSection';
 import { ProcessSection } from '@/components/ProcessSection';
 import { ServiceAreaSection } from '@/components/ServiceAreaSection';
@@ -12,7 +13,7 @@ function LocalBusinessSchema() {
     '@type': 'HouseCleaner',
     name: SITE_NAME,
     description:
-      'Commercial property cleaning and Airbnb turnovers based in Carrollton, TX, serving north DFW. Residential cleaning available.',
+      'Clean Freaks DFW: commercial property cleaning and Airbnb turnovers based in Carrollton, TX, serving north DFW. Residential cleaning available.',
     url: SITE_URL,
     telephone: CONTACT.phoneTel,
     email: CONTACT.email,
@@ -50,6 +51,7 @@ export default function Home() {
       <LocalBusinessSchema />
       <Hero />
       <TrustStrip />
+      <ManifestoMarquee />
       <ServicesSection />
       <ProcessSection />
       <ServiceAreaSection />

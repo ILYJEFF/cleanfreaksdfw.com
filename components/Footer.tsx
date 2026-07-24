@@ -1,57 +1,54 @@
 import Link from 'next/link';
 import { SITE_NAME, CONTACT, SERVICE_CITIES, SITE_TAGLINE } from '@/lib/brand';
+import { BrandMark } from '@/components/BrandMark';
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden border-t border-ink/5 bg-ink text-white">
-      <div className="pointer-events-none absolute -right-24 top-0 h-64 w-64 rounded-full bg-tide/20 blur-3xl" />
-      <div className="pointer-events-none absolute -left-16 bottom-0 h-48 w-48 rounded-full bg-tide-bright/10 blur-3xl" />
+    <footer className="relative overflow-hidden border-t-2 border-ink bg-ink text-white">
+      <div className="pointer-events-none absolute -right-10 top-8 h-40 w-40 rotate-12 bg-lime/20" />
+      <div className="pointer-events-none absolute -left-8 bottom-10 h-28 w-28 -rotate-6 bg-lime/10" />
 
-      <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8 lg:py-16">
         <div className="grid gap-12 md:grid-cols-3">
-          <div className="md:col-span-1">
-            <p className="font-display text-3xl font-700 tracking-tight" style={{ fontWeight: 700 }}>
-              CleanFreaks
-              <span className="text-tide-bright">.</span>
-              <span className="ml-1 text-lg font-600 text-white/55">DFW</span>
-            </p>
-            <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/65">
-              {SITE_TAGLINE}. Based in {CONTACT.city}, built for properties that need to look ready every day.
+          <div>
+            <BrandMark tone="light" size="lg" href="/" />
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/60">
+              {SITE_TAGLINE} Based in {CONTACT.city}. Operating north.
             </p>
           </div>
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-tide-bright">
+            <p className="font-display text-xs font-extrabold uppercase tracking-[0.2em] text-lime">
               Explore
             </p>
-            <ul className="mt-4 space-y-2 text-sm text-white/75">
+            <ul className="mt-4 space-y-2 text-sm font-medium text-white/75">
               <li>
-                <Link href="/#services" className="hover:text-white transition-colors">
+                <Link href="/#services" className="hover:text-lime transition-colors">
                   Services
                 </Link>
               </li>
               <li>
-                <Link href="/services/commercial" className="hover:text-white transition-colors">
+                <Link href="/services/commercial" className="hover:text-lime transition-colors">
                   Commercial
                 </Link>
               </li>
               <li>
-                <Link href="/services/airbnb" className="hover:text-white transition-colors">
+                <Link href="/services/airbnb" className="hover:text-lime transition-colors">
                   Airbnb turnovers
                 </Link>
               </li>
               <li>
-                <Link href="/services/residential" className="hover:text-white transition-colors">
+                <Link href="/services/residential" className="hover:text-lime transition-colors">
                   Residential
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="hover:text-white transition-colors">
+                <Link href="/about" className="hover:text-lime transition-colors">
                   About
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-white transition-colors">
+                <Link href="/contact" className="hover:text-lime transition-colors">
                   Contact
                 </Link>
               </li>
@@ -59,33 +56,33 @@ export function Footer() {
           </div>
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-tide-bright">
+            <p className="font-display text-xs font-extrabold uppercase tracking-[0.2em] text-lime">
               Contact
             </p>
             <ul className="mt-4 space-y-2 text-sm text-white/75">
               <li>
-                <a href={`tel:${CONTACT.phoneTel}`} className="hover:text-white transition-colors">
+                <a href={`tel:${CONTACT.phoneTel}`} className="font-semibold hover:text-lime transition-colors">
                   {CONTACT.phoneDisplay}
                 </a>
               </li>
               <li>
-                <a href={`mailto:${CONTACT.email}`} className="hover:text-white transition-colors">
+                <a href={`mailto:${CONTACT.email}`} className="hover:text-lime transition-colors">
                   {CONTACT.email}
                 </a>
               </li>
-              <li className="pt-2 text-white/55">{CONTACT.city}</li>
+              <li className="pt-2 text-white/45">{CONTACT.city}</li>
             </ul>
-            <p className="mt-6 text-xs leading-relaxed text-white/45">
-              Serving {SERVICE_CITIES.slice(0, 6).join(', ')}, and nearby.
+            <p className="mt-6 text-xs leading-relaxed text-white/40">
+              {SERVICE_CITIES.slice(0, 6).join(' · ')} · and north
             </p>
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col gap-3 border-t border-white/10 pt-8 text-xs text-white/40 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-12 flex flex-col gap-2 border-t-2 border-white/10 pt-6 text-xs font-medium uppercase tracking-wider text-white/35 sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
+            © {new Date().getFullYear()} {SITE_NAME}
           </p>
-          <p>Carrollton based · Operating north</p>
+          <p>cleanfreaksdfw.com</p>
         </div>
       </div>
     </footer>

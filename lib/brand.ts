@@ -2,7 +2,7 @@
 
 export const SITE_NAME = 'Clean Freaks DFW';
 export const SITE_NAME_SHORT = 'CleanFreaks';
-export const SITE_TAGLINE = 'Commercial & Airbnb cleaning from Carrollton north';
+export const SITE_TAGLINE = 'A little obsessed. Extremely thorough.';
 export const SITE_REGION = 'Carrollton & North DFW';
 export const SITE_URL = 'https://www.cleanfreaksdfw.com';
 
@@ -16,29 +16,31 @@ export const CONTACT = {
 export const FOCUS_SERVICES = [
   {
     slug: 'commercial',
-    title: 'Commercial cleaning',
-    short: 'Offices, retail, and shared workspaces that stay guest-ready for your clients.',
+    title: 'Commercial',
+    headline: 'Offices that look like you mean business.',
+    short: 'Lobbies, suites, and shared spaces cleaned like your brand depends on it. Because it does.',
     description:
-      'Scheduled and after-hours cleaning for offices, medical suites, retail floors, and common areas. Reliable crews, consistent checklists, and a polish that matches how you want your business seen.',
+      'Scheduled and after-hours cleans for offices, medical suites, retail floors, and common areas. We run tight checklists, show up when we say we will, and leave every surface looking intentional.',
     image:
       'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1400&q=80',
     points: [
-      'Nightly or recurring schedules',
-      'Lobby, restrooms, kitchens, workstations',
-      'Supply restocking on request',
+      'Nightly or recurring routes',
+      'Lobby, restrooms, kitchens, desks',
+      'Supply restock on request',
       'Bonded, insured, keyed access ready',
     ],
   },
   {
     slug: 'airbnb',
-    title: 'Airbnb & short-term stays',
-    short: 'Same-day turnovers so every guest walks into a five-star first impression.',
+    title: 'Airbnb turnovers',
+    headline: 'Guest-ready before the next knock.',
+    short: 'Same-day turnovers with photo-ready finishes. Your listing stays sharp. Reviews stay kinder.',
     description:
-      'Fast, photo-ready turnovers between guests. We reset linens, restock essentials, deep-clean kitchens and baths, and flag maintenance issues before your next booking.',
+      'Fast resets between guests. Linens, kitchens, baths, staging, and amenity checks against your list. We flag issues before the next booking, not after the one-star review.',
     image:
       'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1400&q=80',
     points: [
-      'Same-day and same-afternoon turnovers',
+      'Same-day and afternoon turnovers',
       'Linen change & staging to your checklist',
       'Amenity restock coordination',
       'Photo-ready finish for listings',
@@ -48,10 +50,11 @@ export const FOCUS_SERVICES = [
 
 export const SECONDARY_SERVICE = {
   slug: 'residential',
-  title: 'Residential cleaning',
-  short: 'Homes on the calendar when you need them. Available, not our main focus.',
+  title: 'Residential',
+  headline: 'Homes when you need us.',
+  short: 'Available, not the main act. Same freaky standards when we take the job.',
   description:
-    'Recurring or one-time home cleans for homeowners who want the same care we bring to commercial and short-term properties. Ideal if you already work with us on rentals or your office.',
+    'Recurring or one-time home cleans for people who already trust us with rentals or workplaces. Same attention. Flexible scheduling.',
   image:
     'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1400&q=80',
   points: [
@@ -79,24 +82,31 @@ export const SERVICE_CITIES = [
 export const PROCESS_STEPS = [
   {
     step: '01',
-    title: 'Tell us the property',
-    body: 'Share the address, access notes, and whether it is commercial, a short-term stay, or a home.',
+    title: 'Spill the details',
+    body: 'Property type, access notes, timing. Commercial route or Airbnb window. We listen weirdly closely.',
   },
   {
     step: '02',
-    title: 'We build the checklist',
-    body: 'Commercial scopes and Airbnb turnovers get tailored checklists so nothing is missed between visits.',
+    title: 'Build the freak list',
+    body: 'Custom checklist for your space. Nothing vague. Nothing “we usually do.” Your standards, written down.',
   },
   {
     step: '03',
-    title: 'Show up polished',
-    body: 'On-time crews, clear communication, and a finish you can open the door on with confidence.',
+    title: 'Leave it spotless',
+    body: 'On time. Communicative. Finished like we will be judged. Because we are.',
   },
 ] as const;
 
 export const TRUST_POINTS = [
-  { label: 'Carrollton based', detail: 'North DFW focus' },
+  { label: 'Carrollton based', detail: 'North DFW routes' },
   { label: 'Commercial first', detail: 'Offices & retail' },
-  { label: 'Guest-ready', detail: 'Airbnb turnovers' },
-  { label: 'Insured crews', detail: 'Keyed access ready' },
+  { label: 'Turnover ready', detail: 'Airbnb same-day' },
+  { label: 'Insured crews', detail: 'Keyed access OK' },
+] as const;
+
+export const MANIFESTO = [
+  'Dust does not get a free pass.',
+  'Corners count.',
+  'On time is a cleanliness issue.',
+  'Your guests should never know we were here. Only that the place feels new.',
 ] as const;

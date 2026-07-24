@@ -2,17 +2,21 @@ import { TRUST_POINTS } from '@/lib/brand';
 
 export function TrustStrip() {
   return (
-    <section className="relative border-b border-ink/5 bg-mist">
-      <div className="mx-auto grid max-w-6xl grid-cols-2 gap-px bg-ink/5 sm:grid-cols-4">
-        {TRUST_POINTS.map((item) => (
+    <section className="border-b-2 border-ink bg-lime">
+      <div className="mx-auto grid max-w-6xl grid-cols-2 sm:grid-cols-4">
+        {TRUST_POINTS.map((item, i) => (
           <div
             key={item.label}
-            className="bg-mist px-5 py-7 sm:px-6 sm:py-8"
+            className={`px-5 py-6 sm:px-6 sm:py-7 ${
+              i % 2 === 1 ? 'border-l-2 border-ink/15' : ''
+            } ${i >= 2 ? 'border-t-2 border-ink/15 sm:border-t-0' : ''} ${
+              i >= 2 ? 'sm:border-l-2 sm:border-ink/15' : i === 1 ? '' : ''
+            }`}
           >
-            <p className="font-display text-lg font-700 tracking-tight text-ink sm:text-xl" style={{ fontWeight: 700 }}>
+            <p className="font-display text-base font-extrabold tracking-tight text-ink sm:text-lg">
               {item.label}
             </p>
-            <p className="mt-1 text-sm text-ink-mute">{item.detail}</p>
+            <p className="mt-0.5 text-sm font-medium text-ink/70">{item.detail}</p>
           </div>
         ))}
       </div>

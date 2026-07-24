@@ -3,10 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --ink: #0e2428;
-  --tide: #1f7a6e;
-  --mist: #f2f6f5;
-  --sun: #f7faf9;
+  --ink: #0b0d0c;
+  --lime: #c8f000;
+  --paper: #f5f7f2;
 }
 
 html {
@@ -14,7 +13,7 @@ html {
 }
 
 body {
-  @apply antialiased text-ink bg-sun font-sans;
+  @apply antialiased text-ink bg-paper font-sans;
 }
 
 @layer utilities {
@@ -32,23 +31,24 @@ button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  @apply outline-none ring-2 ring-tide ring-offset-2 ring-offset-sun;
+  @apply outline-none ring-2 ring-lime ring-offset-2 ring-offset-paper;
 }
 
 ::selection {
-  @apply bg-tide/25 text-ink;
+  @apply bg-lime text-ink;
 }
 
-@keyframes line-draw {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
+.checker-bg {
+  background-color: #f5f7f2;
+  background-image:
+    linear-gradient(45deg, #e8ece3 25%, transparent 25%),
+    linear-gradient(-45deg, #e8ece3 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #e8ece3 75%),
+    linear-gradient(-45deg, transparent 75%, #e8ece3 75%);
+  background-size: 28px 28px;
+  background-position: 0 0, 0 14px, 14px -14px, -14px 0;
 }
 
-.animate-line {
-  transform-origin: left;
-  animation: line-draw 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.slant-edge {
+  clip-path: polygon(0 0, 100% 0, 100% 92%, 0 100%);
 }

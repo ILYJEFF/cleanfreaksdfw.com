@@ -1,19 +1,19 @@
 import type { Metadata } from 'next';
-import { Syne, Outfit } from 'next/font/google';
+import { Unbounded, Manrope } from 'next/font/google';
 import { SITE_NAME, SITE_TAGLINE, SITE_URL, CONTACT } from '@/lib/brand';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { FloatingCTA } from '@/components/FloatingCTA';
 import './globals.css';
 
-const display = Syne({
+const display = Unbounded({
   subsets: ['latin'],
   variable: '--font-display',
   display: 'swap',
-  weight: ['500', '600', '700', '800'],
+  weight: ['500', '600', '700', '800', '900'],
 });
 
-const sans = Outfit({
+const sans = Manrope({
   subsets: ['latin'],
   variable: '--font-sans',
   display: 'swap',
@@ -25,20 +25,20 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_NAME}`,
   },
   description:
-    'Clean Freaks DFW is based in Carrollton and serves north DFW. Commercial property cleaning and Airbnb turnovers first. Residential available when you need it.',
+    'Clean Freaks DFW: commercial cleaning and Airbnb turnovers from Carrollton north through Frisco, Plano, Lewisville, and beyond. A little obsessed. Extremely thorough.',
   keywords: [
     'Clean Freaks DFW',
+    'cleanfreaksdfw',
     'commercial cleaning Carrollton',
     'Airbnb cleaning Frisco',
     'office cleaning Lewisville',
     'short term rental cleaning Plano',
     'cleaning company north Dallas',
-    'The Colony cleaning service',
   ],
   openGraph: {
     title: `${SITE_NAME} | ${SITE_TAGLINE}`,
     description:
-      'Commercial and Airbnb cleaning from Carrollton north through Frisco, Plano, Lewisville, and beyond. Clean Freaks DFW.',
+      'Commercial and Airbnb cleaning from Carrollton north. Clean Freaks DFW.',
     url: SITE_URL,
     siteName: SITE_NAME,
     locale: 'en_US',
@@ -59,7 +59,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${display.variable} ${sans.variable}`}>
-      <body className="min-h-screen flex flex-col font-sans">
+      <body className="flex min-h-screen flex-col font-sans">
         <Header />
         <main id="main" className="flex-1">
           {children}
