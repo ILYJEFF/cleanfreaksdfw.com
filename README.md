@@ -17,8 +17,16 @@ Carrollton-based cleaning company. **Commercial** and **Airbnb turnovers** first
 
 ```bash
 npm install
+cp .env.example .env.local
+# Fill Supabase + PrivateMail SMTP values
 npm run dev
 ```
+
+## Backend
+
+- **Supabase:** shared project with ApplySharp / Hammitt Group. This app only uses `cf_*` tables (see `supabase/migrations/`).
+- **Contact form:** `POST /api/contact` saves to `cf_quote_requests` and emails via Namecheap PrivateMail (`mail.privateemail.com`).
+- Env template: `.env.example`
 
 ## Brand tokens
 
