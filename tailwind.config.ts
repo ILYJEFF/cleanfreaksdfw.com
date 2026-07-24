@@ -32,7 +32,6 @@ const config: Config = {
           DEFAULT: '#eef1ea',
           deep: '#dde3d6',
         },
-        // legacy aliases used during transition
         sun: '#f5f7f2',
         tide: {
           DEFAULT: '#c8f000',

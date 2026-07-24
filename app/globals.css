@@ -13,7 +13,11 @@ html {
 }
 
 body {
-  @apply antialiased text-ink bg-paper font-sans;
+  color: var(--ink);
+  background-color: var(--paper);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @layer utilities {
@@ -31,11 +35,13 @@ button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  @apply outline-none ring-2 ring-lime ring-offset-2 ring-offset-paper;
+  outline: none;
+  box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--lime);
 }
 
 ::selection {
-  @apply bg-lime text-ink;
+  background-color: var(--lime);
+  color: var(--ink);
 }
 
 .checker-bg {
