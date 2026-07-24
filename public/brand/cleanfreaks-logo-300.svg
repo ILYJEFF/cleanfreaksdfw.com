@@ -1,6 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300" fill="none">
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
   <rect width="300" height="300" fill="#0b0d0c"/>
-  <rect x="28" y="28" width="244" height="244" stroke="#c8f000" stroke-width="14" fill="none"/>
-  <text x="150" y="178" text-anchor="middle" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-size="96" font-weight="900" fill="#c8f000" letter-spacing="-2">CF</text>
-  <text x="150" y="232" text-anchor="middle" font-family="Arial, Helvetica Neue, sans-serif" font-size="22" font-weight="800" fill="#c8f000" letter-spacing="6">DFW</text>
+  <rect x="18" y="18" width="264" height="264" fill="none" stroke="#c8f000" stroke-width="10"/>
+  <!-- Wordmark stacked for square crop -->
+  <g font-family="Arial Black, Helvetica Neue, Arial, sans-serif" text-anchor="middle">
+    <text x="150" y="118" font-size="42" font-weight="900" fill="#ffffff" letter-spacing="-1.5">Clean</text>
+    <text x="150" y="168" font-size="42" font-weight="900" fill="#c8f000" letter-spacing="-1.5">Freaks</text>
+  </g>
+  <!-- DFW badge -->
+  <rect x="98" y="196" width="104" height="36" rx="3" fill="#c8f000"/>
+  <text x="150" y="221" text-anchor="middle" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-size="18" font-weight="900" fill="#0b0d0c" letter-spacing="4">DFW</text>
 </svg>
