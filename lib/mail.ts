@@ -220,9 +220,13 @@ export async function sendQuoteNotification(
     subject,
     text,
     html,
+    priority: "high",
     headers: {
       "X-CleanFreaks-Lead": "quote",
       "X-Auto-Response-Suppress": "All",
+      Importance: "high",
+      "X-Priority": "1",
+      "X-MSMail-Priority": "High",
     },
   });
 
