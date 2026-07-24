@@ -3,10 +3,18 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { SITE_NAME, CONTACT, SERVICE_CITIES, MANIFESTO, SITE_TAGLINE } from '@/lib/brand';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { absoluteUrl } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'About',
   description: `${SITE_NAME} is a Carrollton-based cleaning company obsessed with commercial properties and Airbnb turnovers across north DFW.`,
+  alternates: { canonical: absoluteUrl('/about') },
+  openGraph: {
+    title: `About | ${SITE_NAME}`,
+    description: `${SITE_NAME} is a Carrollton-based cleaning company obsessed with commercial properties and Airbnb turnovers across north DFW.`,
+    url: absoluteUrl('/about'),
+  },
 };
 
 export default function AboutPage() {
@@ -26,7 +34,14 @@ export default function AboutPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/90 to-ink/55" />
         <div className="absolute inset-0 bg-lime-beam" />
         <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <p className="font-display text-xs font-extrabold uppercase tracking-[0.22em] text-lime">
+          <Breadcrumbs
+            tone="dark"
+            items={[
+              { name: 'Home', href: '/' },
+              { name: 'About', href: '/about' },
+            ]}
+          />
+          <p className="mt-5 font-display text-xs font-extrabold uppercase tracking-[0.22em] text-lime">
             About the freaks
           </p>
           <h1 className="mt-3 max-w-3xl font-display text-4xl font-black tracking-tight text-balance sm:text-6xl">
@@ -38,6 +53,7 @@ export default function AboutPage() {
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-3 bg-lime" aria-hidden />
       </div>
+
 
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">

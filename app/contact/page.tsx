@@ -2,10 +2,18 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { CONTACT, SITE_NAME } from '@/lib/brand';
 import { ContactForm } from '@/components/ContactForm';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { absoluteUrl } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Contact',
   description: `Request a commercial or Airbnb cleaning quote from ${SITE_NAME} in Carrollton and north DFW.`,
+  alternates: { canonical: absoluteUrl('/contact') },
+  openGraph: {
+    title: `Contact | ${SITE_NAME}`,
+    description: `Request a commercial or Airbnb cleaning quote from ${SITE_NAME} in Carrollton and north DFW.`,
+    url: absoluteUrl('/contact'),
+  },
 };
 
 export default function ContactPage() {
@@ -14,7 +22,14 @@ export default function ContactPage() {
       <div className="relative overflow-hidden border-b-2 border-ink bg-ink pt-28 pb-16 text-white sm:pt-36 sm:pb-20">
         <div className="absolute inset-0 bg-lime-beam" />
         <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <p className="font-display text-xs font-extrabold uppercase tracking-[0.22em] text-lime">
+          <Breadcrumbs
+            tone="dark"
+            items={[
+              { name: 'Home', href: '/' },
+              { name: 'Contact', href: '/contact' },
+            ]}
+          />
+          <p className="mt-5 font-display text-xs font-extrabold uppercase tracking-[0.22em] text-lime">
             Contact
           </p>
           <h1 className="mt-3 max-w-2xl font-display text-4xl font-black tracking-tight sm:text-5xl">

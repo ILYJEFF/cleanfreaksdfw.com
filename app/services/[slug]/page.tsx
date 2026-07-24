@@ -9,6 +9,9 @@ import {
   SITE_NAME,
   CONTACT,
 } from '@/lib/brand';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { JsonLd } from '@/components/JsonLd';
+import { absoluteUrl, serviceJsonLd } from '@/lib/seo';
 
 const ALL = [...FOCUS_SERVICES, SECONDARY_SERVICE];
 
@@ -21,9 +24,24 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: Props): Metadata {
   const service = ALL.find((s) => s.slug === params.slug);
   if (!service) return { title: 'Service' };
+  const url = absoluteUrl(`/services/${service.slug}`);
+  const description = `${service.short} ${SITE_NAME} serves Carrollton and north DFW.`;
   return {
     title: service.title,
-    description: `${service.short} ${SITE_NAME} serves Carrollton and north DFW.`,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      title: `${service.title} | ${SITE_NAME}`,
+      description,
+      url,
+      type: 'website',
+      images: [{ url: service.image, alt: `${service.title} cleaning by ${SITE_NAME}` }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${service.title} | ${SITE_NAME}`,
+      description,
+    },
   };
 }
 
@@ -33,14 +51,16 @@ export default function ServicePage({ params }: Props) {
 
   const isSecondary = service.slug === 'residential';
   const others = ALL.filter((s) => s.slug !== service.slug);
+  const schema = serviceJsonLd(service.slug);
 
   return (
     <div className="bg-paper">
+      {schema && <JsonLd data={schema} />}
       <div className="relative min-h-[70vh] overflow-hidden border-b-2 border-ink bg-ink text-white">
         <div className="absolute inset-0">
           <Image
             src={service.image}
-            alt=""
+            alt={`${service.title} cleaning by ${SITE_NAME}`}
             fill
             priority
             className="object-cover"
@@ -51,6 +71,15 @@ export default function ServicePage({ params }: Props) {
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/30" />
 
         <div className="relative mx-auto flex min-h-[70vh] max-w-6xl flex-col justify-end px-4 pb-14 pt-28 sm:px-6 sm:pb-16 lg:px-8">
+          <Breadcrumbs
+            tone="dark"
+            className="mb-5"
+            items={[
+              { name: 'Home', href: '/' },
+              { name: 'Services', href: '/#services' },
+              { name: service.title, href: `/services/${service.slug}` },
+            ]}
+          />
           <p className="w-fit border-2 border-lime bg-lime px-2 py-1 font-display text-[10px] font-extrabold uppercase tracking-[0.18em] text-ink">
             {isSecondary ? 'Also available' : 'Primary focus'}
           </p>

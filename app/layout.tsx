@@ -4,6 +4,8 @@ import { SITE_NAME, SITE_TAGLINE, SITE_URL, CONTACT } from '@/lib/brand';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { FloatingCTA } from '@/components/FloatingCTA';
+import { JsonLd } from '@/components/JsonLd';
+import { organizationJsonLd, websiteJsonLd } from '@/lib/seo';
 import './globals.css';
 
 const display = Unbounded({
@@ -20,6 +22,7 @@ const sans = Manrope({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: `${SITE_NAME} | ${SITE_TAGLINE}`,
     template: `%s | ${SITE_NAME}`,
@@ -34,7 +37,13 @@ export const metadata: Metadata = {
     'office cleaning Lewisville',
     'short term rental cleaning Plano',
     'cleaning company north Dallas',
+    'Airbnb turnover DFW',
+    'commercial cleaning Frisco TX',
   ],
+  authors: [{ name: SITE_NAME, url: SITE_URL }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+  category: 'home and business services',
   openGraph: {
     title: `${SITE_NAME} | ${SITE_TAGLINE}`,
     description:
@@ -44,8 +53,29 @@ export const metadata: Metadata = {
     locale: 'en_US',
     type: 'website',
   },
-  robots: 'index, follow',
-  alternates: { canonical: SITE_URL },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${SITE_NAME} | ${SITE_TAGLINE}`,
+    description:
+      'Commercial and Airbnb cleaning from Carrollton north through Frisco, Plano, and Lewisville.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
+  },
+  alternates: {
+    canonical: SITE_URL,
+    types: {
+      'text/plain': `${SITE_URL}/llms.txt`,
+    },
+  },
   other: {
     'geo.region': 'US-TX',
     'geo.placename': CONTACT.city,
@@ -60,6 +90,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${display.variable} ${sans.variable}`}>
       <body className="flex min-h-screen flex-col font-sans">
+        <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
         <Header />
         <main id="main" className="flex-1">
           {children}

@@ -52,6 +52,16 @@ export function Footer() {
                   Contact
                 </Link>
               </li>
+              <li>
+                <a href="/sitemap.xml" className="hover:text-lime transition-colors">
+                  Sitemap
+                </a>
+              </li>
+              <li>
+                <a href="/llms.txt" className="hover:text-lime transition-colors">
+                  AI / llms.txt
+                </a>
+              </li>
             </ul>
           </div>
 

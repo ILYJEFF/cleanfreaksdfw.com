@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { Hero } from '@/components/Hero';
 import { TrustStrip } from '@/components/TrustStrip';
 import { ManifestoMarquee } from '@/components/ManifestoMarquee';
@@ -5,50 +6,27 @@ import { ServicesSection } from '@/components/ServicesSection';
 import { ProcessSection } from '@/components/ProcessSection';
 import { ServiceAreaSection } from '@/components/ServiceAreaSection';
 import { ContactSection } from '@/components/ContactSection';
-import { SITE_NAME, SITE_URL, CONTACT, SERVICE_CITIES } from '@/lib/brand';
+import { JsonLd } from '@/components/JsonLd';
+import { SITE_NAME, SITE_TAGLINE, SITE_URL } from '@/lib/brand';
+import { faqJsonLd, localBusinessJsonLd } from '@/lib/seo';
 
-function LocalBusinessSchema() {
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'HouseCleaner',
-    name: SITE_NAME,
-    description:
-      'Clean Freaks DFW: commercial property cleaning and Airbnb turnovers based in Carrollton, TX, serving north DFW. Residential cleaning available.',
+export const metadata: Metadata = {
+  title: {
+    absolute: `${SITE_NAME} | ${SITE_TAGLINE}`,
+  },
+  alternates: { canonical: SITE_URL },
+  openGraph: {
     url: SITE_URL,
-    telephone: CONTACT.phoneTel,
-    email: CONTACT.email,
-    address: {
-      '@type': 'PostalAddress',
-      addressLocality: 'Carrollton',
-      addressRegion: 'TX',
-      addressCountry: 'US',
-    },
-    areaServed: SERVICE_CITIES.map((name) => ({
-      '@type': 'City',
-      name,
-      containedInPlace: { '@type': 'State', name: 'Texas' },
-    })),
-    priceRange: '$$',
-    openingHoursSpecification: {
-      '@type': 'OpeningHoursSpecification',
-      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-      opens: '07:00',
-      closes: '19:00',
-    },
-  };
-
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
-}
+    title: `${SITE_NAME} | ${SITE_TAGLINE}`,
+    description:
+      'Commercial and Airbnb cleaning from Carrollton north. Clean Freaks DFW.',
+  },
+};
 
 export default function Home() {
   return (
     <>
-      <LocalBusinessSchema />
+      <JsonLd data={[localBusinessJsonLd(), faqJsonLd()]} />
       <Hero />
       <TrustStrip />
       <ManifestoMarquee />
