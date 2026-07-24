@@ -13,6 +13,7 @@ import {
   PROPERTY_TYPE_OPTIONS,
   type PropertyType,
 } from "@/lib/quote-form";
+import { CustomSelect } from "@/components/CustomSelect";
 
 const fieldClass =
   "w-full border-2 border-ink bg-paper px-3.5 py-3 text-ink placeholder:text-ink-mute/50 outline-none transition-colors focus:bg-white focus:shadow-punch";
@@ -415,30 +416,13 @@ function SelectField({
   placeholder?: string;
 }) {
   return (
-    <div>
-      <label
-        htmlFor={name}
-        className="mb-1.5 block text-sm font-extrabold uppercase tracking-wide text-ink"
-      >
-        {label}
-      </label>
-      <select
-        id={name}
-        name={name}
-        required={required}
-        defaultValue=""
-        className={fieldClass}
-      >
-        <option value="" disabled>
-          {placeholder}
-        </option>
-        {options.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
-    </div>
+    <CustomSelect
+      label={label}
+      name={name}
+      required={required}
+      options={options}
+      placeholder={placeholder}
+    />
   );
 }
 
