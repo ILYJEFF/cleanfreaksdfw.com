@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { SITE_NAME } from '@/lib/brand';
 
 export async function POST(request: NextRequest) {
@@ -10,24 +11,27 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const text = [
-      `New quote request from ${SITE_NAME}`,
-      '',
-      `Name: ${firstName} ${lastName}`,
-      `Phone: ${phone}`,
-      `Email: ${email}`,
-      `Property type: ${propertyType || 'n/a'}`,
-      `City: ${city || 'n/a'}`,
-      '',
-      'Message:',
+    const supabase = getSupabaseAdmin();
+    
+    const { error } = await supabase.from('cleanfreaks_leads').insert({
+      first_name: firstName,
+      last_name: lastName,
+      phone,
+      email,
+      property_type: propertyType || null,
+      city: city || null,
       message,
-    ].join('\n');
+      source: SITE_NAME,
+    });
 
-    // Wire Resend/SendGrid here when ready.
-    console.log('Quote request:', text);
+    if (error) {
+      console.error('Supabase insert error:', error);
+      return NextResponse.json({ error: 'Failed to save submission' }, { status: 500 });
+    }
 
     return NextResponse.json({ ok: true });
-  } catch {
+  } catch (err) {
+    console.error('Contact API error:', err);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
