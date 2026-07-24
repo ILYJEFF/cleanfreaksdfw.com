@@ -31,10 +31,22 @@ function createTransporter() {
       port,
       secure: port === 465,
       auth: { user, pass },
+      authMethod: "LOGIN",
+      tls: { minVersion: "TLSv1.2" },
     }),
     fromName: process.env.SMTP_FROM_NAME?.trim() || "Clean Freaks DFW",
     fromEmail: process.env.SMTP_FROM_EMAIL?.trim() || user,
+    smtpUser: user,
   };
+}
+
+function notifyRecipients(): string[] {
+  const raw =
+    process.env.QUOTE_NOTIFY_EMAIL?.trim() || "hello@cleanfreaksdfw.com";
+  return raw
+    .split(/[,;]+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
 }
 
 export type QuoteMailPayload = {
@@ -139,16 +151,20 @@ function escapeHtml(value: string): string {
     .replace(/"/g, "&quot;");
 }
 
-/** Notify sales about a new quote. */
+/** Notify hello@ (and any comma-separated QUOTE_NOTIFY_EMAIL addresses). */
 export async function sendQuoteNotification(payload: QuoteMailPayload) {
-  const { transporter, fromName, fromEmail } = createTransporter();
+  const { transporter, fromName, fromEmail, smtpUser } = createTransporter();
   const { text, html, name } = buildQuoteBodies(payload);
-  const to =
-    process.env.QUOTE_NOTIFY_EMAIL?.trim() || "hello@cleanfreaksdfw.com";
+  const to = notifyRecipients();
   const typeLabel = propertyLabel(payload.propertyType);
 
   await transporter.sendMail({
     from: `"${fromName}" <${fromEmail}>`,
+    sender: smtpUser,
+    envelope: {
+      from: smtpUser,
+      to,
+    },
     to,
     replyTo: `"${name}" <${payload.email}>`,
     subject: `Quote · ${typeLabel}: ${name}${payload.city ? ` · ${payload.city}` : ""}`,
@@ -159,11 +175,16 @@ export async function sendQuoteNotification(payload: QuoteMailPayload) {
 
 /** Confirmation to the person who submitted the form. */
 export async function sendQuoteConfirmation(payload: QuoteMailPayload) {
-  const { transporter, fromName, fromEmail } = createTransporter();
+  const { transporter, fromName, fromEmail, smtpUser } = createTransporter();
   const greeting = payload.firstName.trim() || "there";
 
   await transporter.sendMail({
     from: `"${fromName}" <${fromEmail}>`,
+    sender: smtpUser,
+    envelope: {
+      from: smtpUser,
+      to: payload.email,
+    },
     to: payload.email,
     subject: "We got your Clean Freaks DFW quote request",
     text: `Hi ${greeting},\n\nThanks for reaching out to Clean Freaks DFW. Our sales team has your details and will follow up soon.\n\nA little obsessed. Extremely thorough.\n`,
