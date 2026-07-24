@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   isSmtpConfigured,
-  sendQuoteConfirmation,
-  sendQuoteNotification,
+  sendQuoteEmails,
 } from "@/lib/mail";
 import { composeMessageFromDetails } from "@/lib/quote-form";
 import { markQuoteEmailSent, saveQuoteRequest } from "@/lib/quotes";
@@ -72,13 +71,9 @@ export async function POST(request: NextRequest) {
 
     let emailSent = false;
     if (isSmtpConfigured()) {
-      // Lead always goes to sales@. Confirmation goes to the form filler.
-      await sendQuoteNotification(payload);
-      try {
-        await sendQuoteConfirmation(payload);
-      } catch (confirmErr) {
-        console.warn("[contact] Confirmation email failed:", confirmErr);
-      }
+      // Lead to sales@ first. Confirmation to the filler is best-effort
+      // (PrivateMail may rate-limit after many sends in one hour).
+      await sendQuoteEmails(payload);
       emailSent = true;
       if (quoteId) {
         await markQuoteEmailSent(quoteId, true);

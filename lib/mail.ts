@@ -185,11 +185,15 @@ function escapeHtml(value: string): string {
  * Lead scrape to sales@ (QUOTE_NOTIFY_EMAIL).
  * Never uses the form submitter as the To address.
  */
-export async function sendQuoteNotification(payload: QuoteMailPayload) {
-  const { transporter, fromName, fromEmail, smtpUser } = createTransporter();
-  const { text, html, name } = buildQuoteBodies(payload);
+export async function sendQuoteNotification(
+  payload: QuoteMailPayload,
+  mail = createTransporter(),
+) {
+  const { transporter, fromName, fromEmail, smtpUser } = mail;
+  const { text, html } = buildQuoteBodies(payload);
   const recipients = notifyRecipients();
   const typeLabel = propertyLabel(payload.propertyType);
+  const name = `${payload.firstName} ${payload.lastName}`.trim();
   const subject = `NEW LEAD · ${typeLabel}: ${name}${
     payload.city ? ` · ${payload.city}` : ""
   }`;
@@ -227,8 +231,11 @@ export async function sendQuoteNotification(payload: QuoteMailPayload) {
 }
 
 /** Short confirmation to the person who submitted the form. */
-export async function sendQuoteConfirmation(payload: QuoteMailPayload) {
-  const { transporter, fromName, fromEmail, smtpUser } = createTransporter();
+export async function sendQuoteConfirmation(
+  payload: QuoteMailPayload,
+  mail = createTransporter(),
+) {
+  const { transporter, fromName, fromEmail, smtpUser } = mail;
   const greeting = payload.firstName.trim() || "there";
   const to = payload.email.trim();
 
@@ -279,4 +286,45 @@ export async function sendQuoteConfirmation(payload: QuoteMailPayload) {
 
   console.info("[mail] confirmation sent to", to, info.messageId);
   return info;
+}
+
+export function isSmtpRateLimited(err: unknown): boolean {
+  const msg =
+    err instanceof Error
+      ? err.message
+      : typeof err === "object" && err && "response" in err
+        ? String((err as { response?: string }).response || "")
+        : String(err);
+  return /too many messages|rate.?limit|554 5\.7\.1/i.test(msg);
+}
+
+/**
+ * Lead first (required), then customer confirmation (best-effort).
+ * PrivateMail caps outbound volume per hour; confirmation may be skipped when capped.
+ */
+export async function sendQuoteEmails(payload: QuoteMailPayload) {
+  const mail = createTransporter();
+  await sendQuoteNotification(payload, mail);
+
+  let confirmationSent = false;
+  try {
+    await sendQuoteConfirmation(payload, mail);
+    confirmationSent = true;
+  } catch (err) {
+    if (isSmtpRateLimited(err)) {
+      console.warn(
+        "[mail] confirmation skipped: PrivateMail hourly send limit. Lead was still delivered.",
+      );
+    } else {
+      console.warn("[mail] confirmation failed:", err);
+    }
+  }
+
+  try {
+    mail.transporter.close();
+  } catch {
+    // ignore
+  }
+
+  return { confirmationSent };
 }
