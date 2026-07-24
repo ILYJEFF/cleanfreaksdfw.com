@@ -1,6 +1,8 @@
-# Northline Cleaning
+# Clean Freaks DFW
 
 Carrollton-based cleaning company website focused on **commercial properties** and **Airbnb / short-term turnovers**, with residential available as a secondary service. Operating north of Carrollton across north DFW.
+
+**Domain:** [cleanfreaksdfw.com](https://www.cleanfreaksdfw.com)
 
 ## Stack
 
@@ -20,11 +22,11 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Configure
 
-Update contact details and branding in `lib/brand.ts`:
+Update contact details in `lib/brand.ts`:
 
-- Phone / email (placeholder number is currently set for demo)
+- Phone (placeholder until you set a real number)
+- Email (`hello@cleanfreaksdfw.com` by default)
 - Service cities
-- Site URL for production SEO
 
 Wire email delivery in `app/api/contact/route.ts` (Resend, SendGrid, etc.) before going live.
 
@@ -34,4 +36,4 @@ Wire email delivery in `app/api/contact/route.ts` (Resend, SendGrid, etc.) befor
 npm run build
 ```
 
-Deploy the project to Vercel or any Node host that supports Next.js.
+Deploy to Vercel and point `cleanfreaksdfw.com` / `www` at the project.

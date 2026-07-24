@@ -11,8 +11,9 @@ export function Footer() {
         <div className="grid gap-12 md:grid-cols-3">
           <div className="md:col-span-1">
             <p className="font-display text-3xl font-700 tracking-tight" style={{ fontWeight: 700 }}>
-              {SITE_NAME.split(' ')[0]}
+              CleanFreaks
               <span className="text-tide-bright">.</span>
+              <span className="ml-1 text-lg font-600 text-white/55">DFW</span>
             </p>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/65">
               {SITE_TAGLINE}. Based in {CONTACT.city}, built for properties that need to look ready every day.

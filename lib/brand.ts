@@ -1,15 +1,15 @@
-/** Northline Cleaning — brand & business constants */
+/** Clean Freaks DFW — brand & business constants */
 
-export const SITE_NAME = 'Northline Cleaning';
-export const SITE_NAME_SHORT = 'Northline';
+export const SITE_NAME = 'Clean Freaks DFW';
+export const SITE_NAME_SHORT = 'CleanFreaks';
 export const SITE_TAGLINE = 'Commercial & Airbnb cleaning from Carrollton north';
 export const SITE_REGION = 'Carrollton & North DFW';
-export const SITE_URL = 'https://www.northlinecleaning.com';
+export const SITE_URL = 'https://www.cleanfreaksdfw.com';
 
 export const CONTACT = {
   phoneDisplay: '(469) 555-0148',
   phoneTel: '+14695550148',
-  email: 'hello@northlinecleaning.com',
+  email: 'hello@cleanfreaksdfw.com',
   city: 'Carrollton, TX',
 };
 

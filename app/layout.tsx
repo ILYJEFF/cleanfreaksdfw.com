@@ -25,8 +25,9 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_NAME}`,
   },
   description:
-    'Northline Cleaning is based in Carrollton and serves north DFW. Commercial property cleaning and Airbnb turnovers first. Residential available when you need it.',
+    'Clean Freaks DFW is based in Carrollton and serves north DFW. Commercial property cleaning and Airbnb turnovers first. Residential available when you need it.',
   keywords: [
+    'Clean Freaks DFW',
     'commercial cleaning Carrollton',
     'Airbnb cleaning Frisco',
     'office cleaning Lewisville',
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `${SITE_NAME} | ${SITE_TAGLINE}`,
     description:
-      'Commercial and Airbnb cleaning from Carrollton north through Frisco, Plano, Lewisville, and beyond.',
+      'Commercial and Airbnb cleaning from Carrollton north through Frisco, Plano, Lewisville, and beyond. Clean Freaks DFW.',
     url: SITE_URL,
     siteName: SITE_NAME,
     locale: 'en_US',

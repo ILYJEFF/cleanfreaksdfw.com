@@ -26,7 +26,7 @@ export default function AboutPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/50" />
         <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-tide-bright">
-            About {SITE_NAME.split(' ')[0]}
+            About Clean Freaks
           </p>
           <h1 className="mt-3 max-w-3xl font-display text-4xl font-700 tracking-tight text-balance sm:text-5xl lg:text-6xl" style={{ fontWeight: 700 }}>
             Cleaning that keeps pace with how north DFW works and hosts.

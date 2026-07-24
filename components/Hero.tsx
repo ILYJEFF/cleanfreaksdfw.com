@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Phone } from 'lucide-react';
-import { SITE_NAME, CONTACT, SITE_REGION } from '@/lib/brand';
+import { SITE_NAME_SHORT, CONTACT, SITE_REGION } from '@/lib/brand';
 
 const HERO_IMAGE =
   'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=2000&q=80';
@@ -25,11 +25,14 @@ export function Hero() {
 
       <div className="relative mx-auto flex min-h-[100svh] max-w-6xl flex-col justify-end px-4 pb-16 pt-28 sm:px-6 sm:pb-20 lg:px-8 lg:pb-24">
         <p
-          className="font-display text-[clamp(3.5rem,14vw,9.5rem)] font-800 leading-[0.9] tracking-tight text-white animate-rise"
+          className="font-display text-[clamp(2.75rem,12vw,8rem)] font-800 leading-[0.9] tracking-tight text-white animate-rise"
           style={{ fontWeight: 800 }}
         >
-          {SITE_NAME.split(' ')[0]}
+          {SITE_NAME_SHORT}
           <span className="text-tide-bright">.</span>
+        </p>
+        <p className="mt-3 text-sm font-semibold uppercase tracking-[0.28em] text-tide-bright animate-rise [animation-delay:80ms] opacity-0 [animation-fill-mode:forwards]">
+          DFW
         </p>
 
         <div className="mt-6 grid max-w-3xl gap-6 animate-rise [animation-delay:120ms] opacity-0 [animation-fill-mode:forwards] sm:mt-8">
