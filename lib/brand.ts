@@ -7,8 +7,8 @@ export const SITE_REGION = 'Carrollton & North DFW';
 export const SITE_URL = 'https://www.cleanfreaksdfw.com';
 
 export const CONTACT = {
-  phoneDisplay: '(469) 555-0148',
-  phoneTel: '+14695550148',
+  phoneDisplay: '(254) 479-7482',
+  phoneTel: '+12544797482',
   email: 'sales@cleanfreaksdfw.com',
   city: 'Carrollton, TX',
 };
