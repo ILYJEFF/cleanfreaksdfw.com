@@ -11,7 +11,6 @@ import {
 } from '@/lib/brand';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { JsonLd } from '@/components/JsonLd';
-import { CtaBand } from '@/components/CtaBand';
 import { absoluteUrl, serviceJsonLd } from '@/lib/seo';
 
 const ALL = [...FOCUS_SERVICES, SECONDARY_SERVICE];
@@ -150,12 +149,6 @@ export default function ServicePage({ params }: Props) {
           </div>
         </aside>
       </div>
-
-      <CtaBand
-        title={`Free ${service.title.toLowerCase()} estimate`}
-        body={service.short}
-        idPrefix={`service-${service.slug}`}
-      />
     </div>
   );
 }

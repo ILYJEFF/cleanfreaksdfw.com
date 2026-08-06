@@ -33,17 +33,11 @@ export default function ContactPage() {
             Contact
           </p>
           <h1 className="mt-3 max-w-2xl font-display text-4xl font-black tracking-tight sm:text-5xl">
-            Get your free cleaning estimate
+            Tell us what we are walking into.
           </h1>
           <p className="mt-4 max-w-xl text-lg text-white/70">
-            Choose commercial, Airbnb, or residential. Call {CONTACT.phoneDisplay} or send the form. We follow up fast.
+            Choose commercial, Airbnb, or residential. We ask only what sales needs to assess the clean.
           </p>
-          <a
-            href={`tel:${CONTACT.phoneTel}`}
-            className="mt-6 inline-flex items-center gap-2 border-2 border-lime bg-lime px-5 py-3.5 text-sm font-extrabold uppercase tracking-wide text-ink"
-          >
-            Call {CONTACT.phoneDisplay}
-          </a>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-3 bg-lime" aria-hidden />
       </div>

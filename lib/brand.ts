@@ -82,8 +82,8 @@ export const SERVICE_CITIES = [
 export const PROCESS_STEPS = [
   {
     step: '01',
-    title: 'Facility assessment',
-    body: 'Walkthrough of layout, traffic, access, and timing. Commercial route or Airbnb window. We listen weirdly closely.',
+    title: 'Spill the details',
+    body: 'Property type, access notes, timing. Commercial route or Airbnb window. We listen weirdly closely.',
   },
   {
     step: '02',
@@ -92,21 +92,16 @@ export const PROCESS_STEPS = [
   },
   {
     step: '03',
-    title: 'Scheduled execution',
-    body: 'Daytime or after-hours routes that respect how you operate. On time is part of the clean.',
-  },
-  {
-    step: '04',
-    title: 'QC and keep it sharp',
-    body: 'Inspections and feedback loops so quality does not drift after month one. Finished like we will be judged.',
+    title: 'Leave it spotless',
+    body: 'On time. Communicative. Finished like we will be judged. Because we are.',
   },
 ] as const;
 
 export const TRUST_POINTS = [
   { label: 'Carrollton based', detail: 'North DFW routes' },
   { label: 'Commercial first', detail: 'Offices & retail' },
-  { label: 'After-hours ready', detail: 'Quiet when you need it' },
-  { label: 'Bonded & insured', detail: 'Keyed access OK' },
+  { label: 'Turnover ready', detail: 'Airbnb same-day' },
+  { label: 'Insured crews', detail: 'Keyed access OK' },
 ] as const;
 
 export const MANIFESTO = [

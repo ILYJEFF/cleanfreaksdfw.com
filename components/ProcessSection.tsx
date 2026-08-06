@@ -15,7 +15,7 @@ export function ProcessSection() {
           </h2>
         </div>
 
-        <ol className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <ol className="mt-14 grid gap-5 sm:grid-cols-3">
           {PROCESS_STEPS.map((item) => (
             <li
               key={item.step}

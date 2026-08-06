@@ -1,7 +1,4 @@
 import { CONTACT, FOCUS_SERVICES, SECONDARY_SERVICE, SERVICE_CITIES, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/brand";
-import { SERVICE_AREAS } from "@/lib/areas";
-import { FACILITIES } from "@/lib/facilities";
-import { FAQS } from "@/lib/faqs";
 
 export const ALL_SERVICES = [...FOCUS_SERVICES, SECONDARY_SERVICE];
 
@@ -152,18 +149,44 @@ export function serviceJsonLd(slug: string) {
   };
 }
 
-export function faqJsonLd(items = FAQS) {
+export function faqJsonLd() {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: items.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer,
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "What does Clean Freaks DFW specialize in?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Commercial cleaning and Airbnb / short-term rental turnovers across Carrollton and north DFW. Residential cleaning is available when capacity allows.",
+        },
       },
-    })),
+      {
+        "@type": "Question",
+        name: "Which cities does Clean Freaks DFW serve?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `We operate from Carrollton through north DFW, including ${SERVICE_CITIES.join(", ")}.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: "How do I get a cleaning quote?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Submit the quote form at ${SITE_URL}/contact or call ${CONTACT.phoneDisplay}. Tell us the property type and we will follow up shortly.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Do you offer same-day Airbnb turnovers?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes. Same-day and afternoon turnovers with linen changes, staging, and amenity checks against your checklist.",
+        },
+      },
+    ],
   };
 }
 
@@ -171,20 +194,9 @@ export const STATIC_ROUTES = [
   { path: "/", changeFrequency: "weekly" as const, priority: 1 },
   { path: "/about", changeFrequency: "monthly" as const, priority: 0.7 },
   { path: "/contact", changeFrequency: "monthly" as const, priority: 0.9 },
-  { path: "/faq", changeFrequency: "monthly" as const, priority: 0.8 },
   ...ALL_SERVICES.map((s) => ({
     path: `/services/${s.slug}`,
     changeFrequency: "monthly" as const,
     priority: 0.85,
-  })),
-  ...FACILITIES.map((f) => ({
-    path: `/facilities/${f.slug}`,
-    changeFrequency: "monthly" as const,
-    priority: 0.8,
-  })),
-  ...SERVICE_AREAS.map((a) => ({
-    path: `/areas/${a.slug}`,
-    changeFrequency: "monthly" as const,
-    priority: 0.75,
   })),
 ];
