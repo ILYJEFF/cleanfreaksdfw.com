@@ -23,6 +23,7 @@ type CustomSelectProps = {
   placeholder?: string;
   value?: string;
   onChange?: (value: string) => void;
+  labelClassName?: string;
 };
 
 export function CustomSelect({
@@ -33,6 +34,7 @@ export function CustomSelect({
   placeholder = "Select…",
   value: controlledValue,
   onChange,
+  labelClassName,
 }: CustomSelectProps) {
   const listId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
@@ -104,7 +106,10 @@ export function CustomSelect({
     <div ref={rootRef} className="relative">
       <label
         htmlFor={`${name}-trigger`}
-        className="mb-1.5 block text-sm font-extrabold uppercase tracking-wide text-ink"
+        className={
+          labelClassName ??
+          "mb-1.5 block text-sm font-extrabold uppercase tracking-wide text-ink"
+        }
       >
         {label}
       </label>

@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Phone } from 'lucide-react';
 import { SITE_NAME, CONTACT, SERVICE_CITIES, MANIFESTO, SITE_TAGLINE } from '@/lib/brand';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { CtaBand } from '@/components/CtaBand';
 import { absoluteUrl } from '@/lib/seo';
 
 export const metadata: Metadata = {
@@ -42,7 +43,7 @@ export default function AboutPage() {
             ]}
           />
           <p className="mt-5 font-display text-xs font-extrabold uppercase tracking-[0.22em] text-lime">
-            About the freaks
+            Why us
           </p>
           <h1 className="mt-3 max-w-3xl font-display text-4xl font-black tracking-tight text-balance sm:text-6xl">
             {SITE_TAGLINE}
@@ -50,10 +51,25 @@ export default function AboutPage() {
           <p className="mt-5 max-w-xl text-lg text-white/70">
             We built {SITE_NAME} for properties that cannot look “pretty good.” Commercial opens and guest check-ins deserve freaks.
           </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 border-2 border-ink bg-lime px-5 py-3.5 text-sm font-extrabold uppercase tracking-wide text-ink shadow-punch hover:-translate-y-0.5"
+            >
+              Free estimate
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+            <a
+              href={`tel:${CONTACT.phoneTel}`}
+              className="inline-flex items-center gap-2 border-2 border-white/35 px-5 py-3.5 text-sm font-extrabold uppercase tracking-wide text-white hover:border-lime hover:text-lime"
+            >
+              <Phone className="h-4 w-4" aria-hidden />
+              {CONTACT.phoneDisplay}
+            </a>
+          </div>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-3 bg-lime" aria-hidden />
       </div>
-
 
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
@@ -67,6 +83,9 @@ export default function AboutPage() {
             <p className="mt-4 text-lg leading-relaxed text-ink-mute">
               Residential is available, especially if you already trust us with rentals or workplaces. Part of the business. Not the center of it.
             </p>
+            <p className="mt-4 text-lg leading-relaxed text-ink-mute">
+              Quality that dies after month one is the industry disease. Documented freak lists, on-time routes, and QC are how we fight it.
+            </p>
           </div>
           <div className="border-2 border-ink bg-mist p-8 shadow-punch sm:p-10">
             <p className="font-display text-xs font-extrabold uppercase tracking-[0.2em] text-ink-mute">
@@ -78,6 +97,7 @@ export default function AboutPage() {
                 ['Focus', 'Commercial + Airbnb turnovers'],
                 ['Also available', 'Residential'],
                 ['Coverage', SERVICE_CITIES.slice(0, 4).join(', ') + ', and north'],
+                ['Phone', CONTACT.phoneDisplay],
               ].map(([label, value]) => (
                 <li key={label} className="border-b-2 border-ink/10 pb-4 last:border-0 last:pb-0">
                   <p className="text-xs font-extrabold uppercase tracking-wider text-ink-mute">{label}</p>
@@ -101,23 +121,13 @@ export default function AboutPage() {
             ))}
           </ul>
         </div>
-
-        <div className="mt-12 flex flex-wrap gap-3">
-          <Link
-            href="/contact"
-            className="inline-flex items-center gap-2 border-2 border-ink bg-lime px-6 py-3.5 text-sm font-extrabold uppercase tracking-wide text-ink shadow-punch hover:-translate-y-0.5 hover:bg-lime-hot"
-          >
-            Request a quote
-            <ArrowRight className="h-5 w-5" aria-hidden />
-          </Link>
-          <Link
-            href="/#services"
-            className="inline-flex items-center gap-2 border-2 border-ink bg-paper px-6 py-3.5 text-sm font-extrabold uppercase tracking-wide text-ink hover:bg-mist"
-          >
-            View services
-          </Link>
-        </div>
       </div>
+
+      <CtaBand
+        eyebrow="Work with the freaks"
+        title="Get a free estimate for your facility"
+        idPrefix="about-cta"
+      />
     </div>
   );
 }
