@@ -73,7 +73,7 @@ export function localBusinessJsonLd() {
     url: SITE_URL,
     telephone: CONTACT.phoneTel,
     email: CONTACT.email,
-    image: absoluteUrl("/icon.svg"),
+    image: absoluteUrl("/icon.png"),
     priceRange: "$$",
     address: {
       "@type": "PostalAddress",
